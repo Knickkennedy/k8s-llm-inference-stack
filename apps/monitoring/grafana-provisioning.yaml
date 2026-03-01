@@ -9,6 +9,7 @@ data:
     datasources:
       - name: Prometheus
         type: prometheus
+        uid: prometheus-uid
         url: http://prometheus.monitoring:9090
         isDefault: true
         editable: true

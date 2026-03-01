@@ -33,9 +33,9 @@ data:
           "title": "Models Loaded",
           "type": "stat",
           "gridPos": { "x": 0, "y": 0, "w": 4, "h": 4 },
-          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "datasource": { "type": "prometheus", "uid": "prometheus-uid" },
           "targets": [{
-            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+            "datasource": { "type": "prometheus", "uid": "prometheus-uid" },
             "expr": "ollama_loaded_models",
             "legendFormat": "Models"
           }],
@@ -60,9 +60,9 @@ data:
           "title": "Mistral RAM Usage (MB)",
           "type": "gauge",
           "gridPos": { "x": 4, "y": 0, "w": 4, "h": 4 },
-          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "datasource": { "type": "prometheus", "uid": "prometheus-uid" },
           "targets": [{
-            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+            "datasource": { "type": "prometheus", "uid": "prometheus-uid" },
             "expr": "ollama_model_ram_mb{model=\"mistral:latest\"}",
             "legendFormat": "RAM (MB)"
           }],
@@ -89,9 +89,9 @@ data:
           "title": "Mistral Status",
           "type": "stat",
           "gridPos": { "x": 8, "y": 0, "w": 4, "h": 4 },
-          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "datasource": { "type": "prometheus", "uid": "prometheus-uid" },
           "targets": [{
-            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+            "datasource": { "type": "prometheus", "uid": "prometheus-uid" },
             "expr": "ollama_model_loaded{model=\"mistral:latest\"}",
             "legendFormat": "Mistral 7B"
           }],
@@ -115,9 +115,9 @@ data:
           "title": "Cumulative Tokens Generated",
           "type": "stat",
           "gridPos": { "x": 12, "y": 0, "w": 4, "h": 4 },
-          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "datasource": { "type": "prometheus", "uid": "prometheus-uid" },
           "targets": [{
-            "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+            "datasource": { "type": "prometheus", "uid": "prometheus-uid" },
             "expr": "ollama_generated_tokens_total",
             "legendFormat": "Total Tokens"
           }],
@@ -139,20 +139,20 @@ data:
           "title": "Request Duration p50 / p95 / p99 (seconds)",
           "type": "timeseries",
           "gridPos": { "x": 0, "y": 4, "w": 16, "h": 6 },
-          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "datasource": { "type": "prometheus", "uid": "prometheus-uid" },
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+              "datasource": { "type": "prometheus", "uid": "prometheus-uid" },
               "expr": "histogram_quantile(0.50, rate(ollama_request_duration_seconds_bucket[5m]))",
               "legendFormat": "p50"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+              "datasource": { "type": "prometheus", "uid": "prometheus-uid" },
               "expr": "histogram_quantile(0.95, rate(ollama_request_duration_seconds_bucket[5m]))",
               "legendFormat": "p95"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+              "datasource": { "type": "prometheus", "uid": "prometheus-uid" },
               "expr": "histogram_quantile(0.99, rate(ollama_request_duration_seconds_bucket[5m]))",
               "legendFormat": "p99"
             }
@@ -166,15 +166,15 @@ data:
           "title": "Tokens Generated vs Prompt Tokens (per second)",
           "type": "timeseries",
           "gridPos": { "x": 0, "y": 10, "w": 16, "h": 6 },
-          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "datasource": { "type": "prometheus", "uid": "prometheus-uid" },
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+              "datasource": { "type": "prometheus", "uid": "prometheus-uid" },
               "expr": "rate(ollama_generated_tokens_total[5m])",
               "legendFormat": "Generated tokens/s"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+              "datasource": { "type": "prometheus", "uid": "prometheus-uid" },
               "expr": "rate(ollama_prompt_tokens_total[5m])",
               "legendFormat": "Prompt tokens/s"
             }
@@ -188,15 +188,15 @@ data:
           "title": "Time Per Token p50 / p95 (seconds)",
           "type": "timeseries",
           "gridPos": { "x": 0, "y": 16, "w": 16, "h": 6 },
-          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "datasource": { "type": "prometheus", "uid": "prometheus-uid" },
           "targets": [
             {
-              "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+              "datasource": { "type": "prometheus", "uid": "prometheus-uid" },
               "expr": "histogram_quantile(0.50, rate(ollama_time_per_token_seconds_bucket[5m]))",
               "legendFormat": "p50 time/token"
             },
             {
-              "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+              "datasource": { "type": "prometheus", "uid": "prometheus-uid" },
               "expr": "histogram_quantile(0.95, rate(ollama_time_per_token_seconds_bucket[5m]))",
               "legendFormat": "p95 time/token"
             }
