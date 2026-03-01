@@ -1,0 +1,165 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-ollama
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  ollama-dashboard.json: |
+    {
+      "title": "Ollama LLM Inference",
+      "uid": "ollama-inference",
+      "timezone": "browser",
+      "refresh": "30s",
+      "time": { "from": "now-1h", "to": "now" },
+      "panels": [
+        {
+          "id": 1,
+          "title": "Models Loaded",
+          "type": "stat",
+          "gridPos": { "x": 0, "y": 0, "w": 4, "h": 4 },
+          "targets": [{
+            "expr": "ollama_loaded_models",
+            "legendFormat": "Models"
+          }],
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "steps": [
+                  { "color": "red", "value": 0 },
+                  { "color": "green", "value": 1 }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "id": 2,
+          "title": "Mistral RAM Usage (MB)",
+          "type": "gauge",
+          "gridPos": { "x": 4, "y": 0, "w": 4, "h": 4 },
+          "targets": [{
+            "expr": "ollama_model_ram_mb{model=\"mistral:latest\"}",
+            "legendFormat": "RAM (MB)"
+          }],
+          "fieldConfig": {
+            "defaults": {
+              "min": 0,
+              "max": 8192,
+              "thresholds": {
+                "steps": [
+                  { "color": "green", "value": 0 },
+                  { "color": "yellow", "value": 5000 },
+                  { "color": "red", "value": 7000 }
+                ]
+              },
+              "unit": "none"
+            }
+          }
+        },
+        {
+          "id": 3,
+          "title": "Model Status",
+          "type": "stat",
+          "gridPos": { "x": 8, "y": 0, "w": 4, "h": 4 },
+          "targets": [{
+            "expr": "ollama_model_loaded{model=\"mistral:latest\"}",
+            "legendFormat": "Mistral"
+          }],
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "mappings": [
+              { "type": "value", "options": { "0": { "text": "Unloaded", "color": "red" }, "1": { "text": "Loaded", "color": "green" } } }
+            ]
+          }
+        },
+        {
+          "id": 4,
+          "title": "Request Duration p50 / p95 / p99 (seconds)",
+          "type": "timeseries",
+          "gridPos": { "x": 0, "y": 4, "w": 12, "h": 6 },
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.50, rate(ollama_request_duration_seconds_bucket[5m]))",
+              "legendFormat": "p50"
+            },
+            {
+              "expr": "histogram_quantile(0.95, rate(ollama_request_duration_seconds_bucket[5m]))",
+              "legendFormat": "p95"
+            },
+            {
+              "expr": "histogram_quantile(0.99, rate(ollama_request_duration_seconds_bucket[5m]))",
+              "legendFormat": "p99"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": { "unit": "s" }
+          }
+        },
+        {
+          "id": 5,
+          "title": "Tokens Generated vs Prompt Tokens",
+          "type": "timeseries",
+          "gridPos": { "x": 0, "y": 10, "w": 12, "h": 6 },
+          "targets": [
+            {
+              "expr": "rate(ollama_generated_tokens_total[5m])",
+              "legendFormat": "Generated tokens/s"
+            },
+            {
+              "expr": "rate(ollama_prompt_tokens_total[5m])",
+              "legendFormat": "Prompt tokens/s"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": { "unit": "short" }
+          }
+        },
+        {
+          "id": 6,
+          "title": "Time Per Token p50 / p95 (seconds)",
+          "type": "timeseries",
+          "gridPos": { "x": 0, "y": 16, "w": 12, "h": 6 },
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.50, rate(ollama_time_per_token_seconds_bucket[5m]))",
+              "legendFormat": "p50 time/token"
+            },
+            {
+              "expr": "histogram_quantile(0.95, rate(ollama_time_per_token_seconds_bucket[5m]))",
+              "legendFormat": "p95 time/token"
+            }
+          ],
+          "fieldConfig": {
+            "defaults": { "unit": "s" }
+          }
+        },
+        {
+          "id": 7,
+          "title": "Cumulative Tokens Generated",
+          "type": "stat",
+          "gridPos": { "x": 12, "y": 0, "w": 4, "h": 4 },
+          "targets": [{
+            "expr": "ollama_generated_tokens_total",
+            "legendFormat": "Total Tokens"
+          }],
+          "options": {
+            "colorMode": "background",
+            "graphMode": "area"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "thresholds": {
+                "steps": [{ "color": "blue", "value": 0 }]
+              }
+            }
+          }
+        }
+      ]
+    }
