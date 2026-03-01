@@ -80,16 +80,20 @@ data:
           "options": {
             "colorMode": "background",
             "graphMode": "none",
-            "reduceOptions": { "calcs": ["lastNotNull"] },
-            "mappings": [
-              {
-                "type": "value",
-                "options": {
-                  "0": { "text": "● Unloaded", "color": "red" },
-                  "1": { "text": "● Loaded", "color": "green" }
+            "reduceOptions": { "calcs": ["lastNotNull"] }
+          },
+          "fieldConfig": {
+            "defaults": {
+              "mappings": [
+                {
+                  "type": "value",
+                  "options": {
+                    "0": { "text": "Unloaded", "color": "red" },
+                    "1": { "text": "Loaded", "color": "green" }
+                  }
                 }
-              }
-            ]
+              ]
+            }
           }
         },
         {
