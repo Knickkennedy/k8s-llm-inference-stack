@@ -14,6 +14,10 @@ spec:
     metadata:
       labels:
         app: ollama
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "11434"
+        prometheus.io/path: "/metrics"
     spec:
       nodeSelector:
         node-role.kubernetes.io/inference: "true"
@@ -22,6 +26,9 @@ spec:
           image: ollama/ollama:latest
           ports:
             - containerPort: 11434
+          env:
+            - name: OLLAMA_METRICS
+              value: "true"
           resources:
             requests:
               memory: "4Gi"
