@@ -36,3 +36,30 @@ Documentation in progress. See `bootstrap/` for cluster setup.
 > **Note:** This stack is designed to demonstrate production-grade Kubernetes infrastructure patterns. 
 > GPU acceleration via the NVIDIA GPU Operator (as deployed in production on H100/A100 hardware) 
 > reduces inference latency to under 1 second for the same queries.
+
+## Prerequisites
+
+Before deploying the monitoring stack, you must manually create the Grafana admin secret. This secret is intentionally excluded from the repository to prevent credential exposure.
+```bash
+kubectl create secret generic grafana-secret \
+  --from-literal=admin-password=<your-strong-password> \
+  --namespace monitoring
+```
+
+> **Note:** The `monitoring` namespace must exist before creating the secret. If deploying manually before ArgoCD sync, create it first:
+> ```bash
+> kubectl create namespace monitoring
+> ```
+> ArgoCD will create the namespace automatically on first sync if you prefer to let it manage the deployment.
+
+## Secrets Management
+
+This repository follows a **GitOps-safe secrets policy**:
+
+- No secrets or credentials are ever committed to this repository
+- Secrets are created manually via `kubectl create secret` before ArgoCD sync
+- The following files are explicitly excluded via `.gitignore`:
+  - `apps/monitoring/grafana-secret.yaml`
+  - Any `*.pem`, `*.key`, `id_*` files
+
+If you fork this repo, audit your commits before making the repository public.
