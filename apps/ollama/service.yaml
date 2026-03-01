@@ -12,4 +12,7 @@ spec:
     - name: http
       port: 11434
       targetPort: 11434
+    - name: metrics
+      port: 8080
+      targetPort: 8080
   type: ClusterIP
