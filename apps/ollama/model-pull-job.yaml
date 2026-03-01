@@ -16,7 +16,7 @@ spec:
         - name: ollama-pull
           image: ollama/ollama:latest
           command:
-            - /bin/sh
+            - /usr/bin/bash
             - -c
             - |
               echo "Waiting for Ollama service to be ready..."
@@ -24,9 +24,14 @@ spec:
                 echo "Ollama not ready yet, waiting..."
                 sleep 5
               done
-              echo "Ollama is ready. Pulling mistral model..."
-              ollama pull mistral
-              echo "Model pull complete."
+              echo "Ollama is ready. Checking if mistral is already present..."
+              if ollama list | grep -q "mistral"; then
+                echo "Mistral already present, skipping pull."
+              else
+                echo "Pulling mistral model..."
+                ollama pull mistral
+                echo "Model pull complete."
+              fi
           env:
             - name: OLLAMA_HOST
               value: "http://ollama:11434"
