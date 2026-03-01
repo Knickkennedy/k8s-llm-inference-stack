@@ -6,13 +6,13 @@ metadata:
 spec:
   description: LLM Inference Stack
   sourceRepos:
-    - 'https://github.com/<your-username>/k8s-llm-inference-stack'
+    - "https://github.com/knickkennedy/k8s-llm-inference-stack"
   destinations:
-    - namespace: '*'
+    - namespace: "*"
       server: https://kubernetes.default.svc
   clusterResourceWhitelist:
-    - group: '*'
-      kind: '*'
+    - group: "*"
+      kind: "*"
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -22,7 +22,7 @@ metadata:
 spec:
   project: llm-inference
   source:
-    repoURL: https://github.com/<your-username>/k8s-llm-inference-stack
+    repoURL: https://github.com/knickkennedy/k8s-llm-inference-stack
     targetRevision: HEAD
     path: apps/ollama
   destination:
@@ -43,7 +43,7 @@ metadata:
 spec:
   project: llm-inference
   source:
-    repoURL: https://github.com/<your-username>/k8s-llm-inference-stack
+    repoURL: https://github.com/knickkennedy/k8s-llm-inference-stack
     targetRevision: HEAD
     path: apps/monitoring
   destination:
