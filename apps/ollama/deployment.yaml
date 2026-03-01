@@ -16,7 +16,7 @@ spec:
         app: ollama
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/port: "11434"
+        prometheus.io/port: "8080"
         prometheus.io/path: "/metrics"
     spec:
       nodeSelector:
@@ -26,9 +26,6 @@ spec:
           image: ollama/ollama:latest
           ports:
             - containerPort: 11434
-          env:
-            - name: OLLAMA_METRICS
-              value: "true"
           resources:
             requests:
               memory: "4Gi"
@@ -51,6 +48,20 @@ spec:
               port: 11434
             initialDelaySeconds: 60
             periodSeconds: 30
+        - name: ollama-metrics
+          image: ghcr.io/norskhelsenett/ollama-metrics:latest
+          env:
+            - name: OLLAMA_HOST
+              value: "http://localhost:11434"
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
       volumes:
         - name: ollama-data
           persistentVolumeClaim:
