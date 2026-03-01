@@ -26,12 +26,15 @@ spec:
               done
               echo "Ollama is ready. Checking if mistral is already present..."
               if ollama list | grep -q "mistral"; then
-                echo "Mistral already present, skipping pull."
+                echo "Mistral already present, warming up model..."
+                ollama run mistral "hello" --nowordwrap
               else
                 echo "Pulling mistral model..."
                 ollama pull mistral
-                echo "Model pull complete."
+                echo "Warming up model..."
+                ollama run mistral "hello" --nowordwrap
               fi
+              echo "Done."
           env:
             - name: OLLAMA_HOST
               value: "http://ollama:11434"
