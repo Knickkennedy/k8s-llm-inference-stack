@@ -20,7 +20,7 @@ spec:
             - -c
             - |
               echo "Waiting for Ollama service to be ready..."
-              until wget -q -O- http://ollama:11434 > /dev/null 2>&1; do
+              until (echo > /dev/tcp/ollama/11434) 2>/dev/null; do
                 echo "Ollama not ready yet, waiting..."
                 sleep 5
               done
