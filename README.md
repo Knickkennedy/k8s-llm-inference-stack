@@ -63,3 +63,9 @@ This repository follows a **GitOps-safe secrets policy**:
   - Any `*.pem`, `*.key`, `id_*` files
 
 If you fork this repo, audit your commits before making the repository public.
+
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [Troubleshooting](docs/troubleshooting.md) | Common issues and fixes encountered during setup |
