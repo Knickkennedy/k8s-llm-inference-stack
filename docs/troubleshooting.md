@@ -9,6 +9,7 @@
 - [Kubernetes Node Metrics Showing 400 Bad Request](#kubernetes-node-metrics-showing-400-bad-request)
 - [SSH Key Accidentally Committed to Repository](#ssh-key-accidentally-committed-to-repository)
 - [Ollama Metrics Missing Request-Level Data](#ollama-metrics-missing-request-level-data-tokens-latency)
+- [Duplicate Prometheus Data Source in Grafana](#duplicate-prometheus-data-source-in-grafana)
 
 ---
 
@@ -218,3 +219,30 @@ ports:
 
 This ensures all inference traffic flows through the sidecar, populating 
 the full set of request-level metrics without any changes to client code.
+
+---
+
+## Duplicate Prometheus Data Source in Grafana
+
+### Symptom
+Grafana shows two Prometheus data sources at the same URL:
+- `prometheus` (no default badge) — manually created
+- `Prometheus` (default badge) — provisioned via ConfigMap
+
+### Cause
+A Prometheus data source was manually added to Grafana before the provisioning 
+ConfigMap was deployed. When Grafana restarted with the provisioning config mounted, 
+it created a second data source automatically, resulting in duplicates.
+
+### Fix
+Delete the manually created lowercase `prometheus` entry:
+1. Go to **Connections** → **Data Sources**
+2. Click the non-default `prometheus` entry
+3. Scroll to the bottom and click **Delete**
+
+The provisioned `Prometheus` source with the **default** badge is the correct one 
+and will persist across pod restarts since it is declared in the provisioning ConfigMap.
+
+### Prevention
+If starting from scratch, do not manually add data sources in the Grafana UI. 
+Let the provisioning ConfigMap handle it automatically on first startup.
