@@ -1,5 +1,17 @@
 # Troubleshooting
 
+## Table of Contents
+- [Prometheus Cannot Scrape Ollama Metrics](#prometheus-cannot-scrape-ollama-metrics)
+- [Ollama Model Unloads From Memory](#ollama-model-unloads-from-memory)
+- [Model Pull Job Stuck in Readiness Loop](#model-pull-job-stuck-in-readiness-loop)
+- [ArgoCD LoadBalancer Stuck Pending](#argocd-loadbalancer-stuck-pending)
+- [Ollama Pod Stuck Pending on Rolling Update](#ollama-pod-stuck-pending-on-rolling-update)
+- [Kubernetes Node Metrics Showing 400 Bad Request](#kubernetes-node-metrics-showing-400-bad-request)
+- [SSH Key Accidentally Committed to Repository](#ssh-key-accidentally-committed-to-repository)
+- [Ollama Metrics Missing Request-Level Data](#ollama-metrics-missing-request-level-data-tokens-latency)
+
+---
+
 ## Prometheus Cannot Scrape Ollama Metrics
 
 ### Symptom
