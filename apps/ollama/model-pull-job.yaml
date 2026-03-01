@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ollama-pull-mistral
+  namespace: ollama
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+spec:
+  template:
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/inference: "true"
+      restartPolicy: OnFailure
+      containers:
+        - name: ollama-pull
+          image: ollama/ollama:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Waiting for Ollama service to be ready..."
+              until curl -s http://ollama:11434 > /dev/null; do
+                echo "Ollama not ready yet, waiting..."
+                sleep 5
+              done
+              echo "Ollama is ready. Pulling mistral model..."
+              ollama pull mistral
+              echo "Model pull complete."
+          env:
+            - name: OLLAMA_HOST
+              value: "http://ollama:11434"
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
