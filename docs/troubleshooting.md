@@ -170,3 +170,39 @@ id_ecdsa
 *.key
 *.pub
 ```
+
+---
+
+## Ollama Metrics Missing Request-Level Data (Tokens, Latency)
+
+### Symptom
+Prometheus only shows three metrics for Ollama:
+- `ollama_loaded_models`
+- `ollama_model_loaded`
+- `ollama_model_ram_mb`
+
+Request-level metrics like `ollama_prompt_tokens_total`, 
+`ollama_generated_tokens_total`, and `ollama_request_duration_seconds` 
+are missing entirely.
+
+### Cause
+The ollama-metrics sidecar acts as a **transparent proxy** — it only captures 
+request metrics for traffic routed **through it** on port 8080. If the Ollama 
+service points directly to Ollama's port 11434, the sidecar never sees the 
+requests and cannot record metrics for them.
+
+### Fix
+Update the Ollama service so port 11434 targets the sidecar on port 8080, 
+which then proxies internally to Ollama:
+```yaml
+ports:
+  - name: http
+    port: 11434
+    targetPort: 8080
+  - name: metrics
+    port: 8080
+    targetPort: 8080
+```
+
+This ensures all inference traffic flows through the sidecar, populating 
+the full set of request-level metrics without any changes to client code.
