@@ -69,3 +69,7 @@ If you fork this repo, audit your commits before making the repository public.
 | Document | Description |
 |----------|-------------|
 | [Troubleshooting](docs/troubleshooting.md) | Common issues and fixes encountered during setup |
+
+## Architecture
+
+![Architecture Diagram](diagrams/architecture.svg)
