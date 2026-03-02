@@ -37,9 +37,48 @@ Documentation in progress. See `bootstrap/` for cluster setup.
 > GPU acceleration via the NVIDIA GPU Operator (as deployed in production on H100/A100 hardware) 
 > reduces inference latency to under 1 second for the same queries.
 
-## Prerequisites
+## Usage
 
-Before deploying the monitoring stack, you must manually create the Grafana admin secret. This secret is intentionally excluded from the repository to prevent credential exposure.
+### 1. Bootstrap ArgoCD
+```bash
+# Create namespace
+kubectl apply -f bootstrap/argocd/namespace.yaml
+
+# Install ArgoCD
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+# Apply insecure mode config (required for Traefik HTTP ingress)
+kubectl apply -f bootstrap/argocd/argocd-cmd-params.yaml
+
+# Restart ArgoCD server to pick up config
+kubectl rollout restart deployment argocd-server -n argocd
+
+# Wait for ArgoCD to be ready
+kubectl wait --for=condition=Ready pods --all -n argocd --timeout=300s
+
+# Apply app-of-apps
+kubectl apply -f argocd/app-of-apps.yaml
+```
+
+### 2. Add hosts entries
+
+Add the following to `/etc/hosts` (Linux/Mac) or `C:\Windows\System32\drivers\etc\hosts` (Windows):
+
+Linux:
+```
+echo "<node-ip> argocd.local grafana.local prometheus.local ollama.local" | sudo tee -a /etc/hosts
+```
+
+Windows:
+```
+Add-Content -Path "C:\Windows\System32\drivers\etc\hosts" -Value "<node-ip> argocd.local grafana.local prometheus.local ollama.local"
+```
+
+Replace `<node-ip>` with the IP of any worker node in your cluster.
+
+### 3. Create Grafana admin secret
+
+This secret is intentionally excluded from the repository to prevent credential exposure.
 ```bash
 kubectl create secret generic grafana-secret \
   --from-literal=admin-password=<your-strong-password> \
@@ -51,6 +90,7 @@ kubectl create secret generic grafana-secret \
 > kubectl create namespace monitoring
 > ```
 > ArgoCD will create the namespace automatically on first sync if you prefer to let it manage the deployment.
+
 
 ## Secrets Management
 
