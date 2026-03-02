@@ -10,6 +10,7 @@
 - [SSH Key Accidentally Committed to Repository](#ssh-key-accidentally-committed-to-repository)
 - [Ollama Metrics Missing Request-Level Data](#ollama-metrics-missing-request-level-data-tokens-latency)
 - [Duplicate Prometheus Data Source in Grafana](#duplicate-prometheus-data-source-in-grafana)
+- [ArgoCD ApplicationSet Controller in CrashLoopBackOff](#argocd-applicationset-controller-in-crashloopbackoff)
 
 ---
 
@@ -246,3 +247,45 @@ and will persist across pod restarts since it is declared in the provisioning Co
 ### Prevention
 If starting from scratch, do not manually add data sources in the Grafana UI. 
 Let the provisioning ConfigMap handle it automatically on first startup.
+
+---
+
+## ArgoCD ApplicationSet Controller in CrashLoopBackOff
+
+### Symptom
+`argocd-applicationset-controller` is in `CrashLoopBackOff` with logs showing:
+```
+failed to get restmapping: no matches for kind "ApplicationSet" in version "argoproj.io/v1alpha1"
+timed out waiting for cache to be synced for Kind *v1alpha1.ApplicationSet
+```
+
+### Cause
+When installing ArgoCD via the standard install manifest, the `applicationsets.argoproj.io` 
+CRD may fail to install correctly due to Kubernetes annotation size limits:
+```
+The CustomResourceDefinition "applicationsets.argoproj.io" is invalid: 
+metadata.annotations: Too long: may not be more than 262144 bytes
+```
+The CRD is created but left in a broken state, causing the ApplicationSet controller 
+to crash on startup because it cannot find the CRD it depends on.
+
+### Fix
+Apply the CRD directly to bypass the annotation size limit:
+```bash
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/crds/applicationset-crd.yaml
+```
+
+Then restart the controller:
+```bash
+kubectl rollout restart deployment argocd-applicationset-controller -n argocd
+kubectl rollout status deployment argocd-applicationset-controller -n argocd
+```
+
+### Prevention
+Add this step to your bootstrap sequence after the initial ArgoCD install:
+```bash
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/crds/applicationset-crd.yaml
+```
+
+Also add this to `bootstrap/argocd/README.md` so future deployments include it automatically.
