@@ -272,7 +272,7 @@ to crash on startup because it cannot find the CRD it depends on.
 ### Fix
 Apply the CRD directly to bypass the annotation size limit:
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/crds/applicationset-crd.yaml
+kubectl apply --server-side -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/crds/applicationset-crd.yaml
 ```
 
 Then restart the controller:

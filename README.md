@@ -15,7 +15,7 @@ A production-grade, GitOps-managed LLM inference stack running on a bare-metal k
 - `cp3` — Observability node (Mini PC, AMD64, 8GB RAM)
 
 ## Getting Started
-Documentation in progress. See `bootstrap/` for cluster setup.
+See the [Bootstrap Guide](bootstrap/argocd/README.md) for full cluster setup instructions.
 
 ## Performance Benchmarks
 

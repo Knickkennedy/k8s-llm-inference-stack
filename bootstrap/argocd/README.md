@@ -9,7 +9,7 @@ kubectl apply -f bootstrap/argocd/namespace.yaml
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 # 3. Fix ApplicationSet CRD (known annotation size issue)
-kubectl apply -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/crds/applicationset-crd.yaml
+kubectl apply --server-side -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/crds/applicationset-crd.yaml
 
 # 4. Apply insecure mode config (required for Traefik HTTP ingress)
 kubectl apply -f bootstrap/argocd/argocd-cmd-params.yaml
