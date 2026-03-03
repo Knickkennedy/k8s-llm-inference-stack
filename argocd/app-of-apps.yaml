@@ -7,6 +7,7 @@ spec:
   description: LLM Inference Stack
   sourceRepos:
     - 'https://github.com/knickkennedy/k8s-llm-inference-stack'
+    - 'https://github.com/knickkennedy/k8s-llm-eval-harness-manifests'
   destinations:
     - namespace: '*'
       server: https://kubernetes.default.svc
