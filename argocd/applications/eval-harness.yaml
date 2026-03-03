@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: eval-harness
+  namespace: argocd
+spec:
+  project: llm-inference
+  source:
+    repoURL: https://github.com/knickkennedy/k8s-llm-eval-harness-manifests
+    targetRevision: HEAD
+    path: environments/dev/eval-harness
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: eval-harness
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
